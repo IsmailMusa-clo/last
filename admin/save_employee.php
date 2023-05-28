@@ -2,7 +2,7 @@
 include 'db_connect.php';
 extract($_POST);
 
-$response = array('status' => 0, 'msg' => 'Error in processing request.');
+$response = array('status' => 0, 'msg' => 'حدث خطأ في معالجة الطلب.');
 
 if (!empty($_FILES['avatar']['name'])) {
 	$target_dir = "uploads/";
@@ -10,10 +10,10 @@ if (!empty($_FILES['avatar']['name'])) {
 	$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
 	if (move_uploaded_file($_FILES["avatar"]["tmp_name"], $target_file)) {
-		$response['msg'] = "The file " . htmlspecialchars(basename($_FILES["avatar"]["name"])) . " has been uploaded.";
+		$response['msg'] = "تم تحميل الملف " . htmlspecialchars(basename($_FILES["avatar"]["name"]));
 		$avatar = $target_file;
 	} else {
-		$response['msg'] = "Sorry, there was an error uploading your file.";
+		$response['msg'] = "عذرًا، حدث خطأ أثناء تحميل الملف.";
 		echo json_encode($response);
 		exit;
 	}
@@ -22,25 +22,22 @@ if (!empty($_FILES['avatar']['name'])) {
 }
 
 if (empty($id)) {
-	$i = 1;
-	while ($i == 1) {
-		$e_num = date('Y') . '-' . mt_rand(1, 9999);
-		$chk  = $conn->query("SELECT * FROM employee where employee_no = '$e_num' ")->num_rows;
-		if ($chk <= 0) {
-			$i = 0;
-		}
+	if (!isset($emp_no) || empty($emp_no)) {
+		$response['msg'] = "يرجى إدخال رقم الموظف.";
+		echo json_encode($response);
+		exit;
 	}
 
-	$save = $conn->query("INSERT INTO `employee` VALUES('', '$e_num', '$e_num', '$firstname', '$middlename', '$lastname',  '$avatar','$department', '$position')");
+	$save = $conn->query("INSERT INTO `employee` (`id`, `employee_no`, `password`, `firstname`, `middlename`, `lastname`, `avatar`, `department`, `position`) VALUES ('', '$emp_no', '', '$firstname', '$middlename', '$lastname', '$avatar', '$department', '$position')");
 	if ($save) {
 		$response['status'] = 1;
-		$response['msg'] = "Data successfully Saved";
+		$response['msg'] = "تم حفظ البيانات بنجاح.";
 	}
 } else {
-	$save = $conn->query("UPDATE `employee` set firstname='$firstname',middlename='$middlename',lastname='$lastname',position='$position',department='$department', avatar='$avatar' where id = $id ");
+	$save = $conn->query("UPDATE `employee` SET `employee_no`='$emp_no', `firstname`='$firstname', `middlename`='$middlename', `lastname`='$lastname', `position`='$position', `department`='$department', `avatar`='$avatar' WHERE `id` = $id");
 	if ($save) {
 		$response['status'] = 1;
-		$response['msg'] = "Data successfully Updated";
+		$response['msg'] = "تم تحديث البيانات بنجاح.";
 	}
 }
 

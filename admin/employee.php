@@ -84,6 +84,11 @@ require_once 'auth.php';
 				<form id='employee_frm' enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group">
+							<label> رقم الموظف</label>
+							<input type="hidden" name="id" />
+							<input type="text" name="emp_no" required="required" class="form-control" />
+						</div>
+						<div class="form-group">
 							<label>الاسم الاول</label>
 							<input type="hidden" name="id" />
 							<input type="text" name="firstname" required="required" class="form-control" />
@@ -187,6 +192,7 @@ require_once 'auth.php';
 						resp = JSON.parse(resp)
 						$('[name="id"]').val(resp.id)
 						$('[name="firstname"]').val(resp.firstname)
+						$('[name="emp_no"]').val(resp.emp_no)
 						$('[name="lastname"]').val(resp.lastname)
 						$('[name="middlename"]').val(resp.middlename)
 						$('[name="department"]').val(resp.department)
@@ -201,6 +207,7 @@ require_once 'auth.php';
 		$('#new_emp_btn').click(function() {
 			$('[name="id"]').val('')
 			$('[name="firstname"]').val('')
+			$('[name="emp_no"]').val('')
 			$('[name="lastname"]').val('')
 			$('[name="middlename"]').val('')
 			$('[name="department"]').val('')

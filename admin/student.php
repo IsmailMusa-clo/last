@@ -26,7 +26,7 @@ require_once 'auth.php';
 			</div>
 		</div>
 		<div class="well col-lg-12">
-			<button class="btn btn-success" type="button" id="new_emp_btn"><span class="fa fa-plus"></span> إضافة جديد </button>
+			<button class="btn btn-success" type="button" id="new_student_btn"><span class="fa fa-plus"></span> إضافة جديد </button>
 			<br />
 			<br />
 			<table id="table" class="table table-bordered table-striped">
@@ -54,7 +54,7 @@ require_once 'auth.php';
 							<td><?php echo $row['lastname'] ?></td>
 							<td><?php echo $row['department'] ?></td>
 							<td><?php echo $row['year_acadmic'] ?></td>
-							<td><img src="<?php echo $row['avatar'] ?>" width="80" class="rounded-circle"></td>
+							<td><img src="<?php echo $row['avatar'] ?>" width="80" height="80" class="rounded-circle"></td>
 							<td>
 								<center>
 									<button class="btn btn-sm btn-outline-primary edit_student" data-id="<?php echo $row['id'] ?>" type="button"><i class="fa fa-edit"></i></button>
@@ -78,14 +78,18 @@ require_once 'auth.php';
 			<div class="modal-content">
 				<div class="modal-header">
 
-					<h4 class="modal-title" id="myModallabel">إضافة موظف جديد</h4>
+					<h4 class="modal-title" id="myModallabel">إضافة طالب جديد</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<form id='student_frm' enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group">
-							<label>الاسم الاول</label>
+							<label> رقم الطالب</label>
 							<input type="hidden" name="id" />
+							<input type="text" name="student_no" required="required" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label>الاسم الاول</label>
 							<input type="text" name="firstname" required="required" class="form-control" />
 						</div>
 						<div class="form-group">
@@ -110,7 +114,7 @@ require_once 'auth.php';
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button class="btn btn-primary" name="submit"><span class="glyphicon glyphicon-save"></span> Save</button>
+						<button class="btn btn-primary" name="submit"><span class="glyphicon glyphicon-save"></span> حفظ</button>
 					</div>
 				</form>
 			</div>
@@ -127,7 +131,7 @@ require_once 'auth.php';
 		$('#student_frm').submit(function(e) {
 			e.preventDefault();
 			$('#student_frm [name="submit"]').attr('disabled', true);
-			$('#student_frm [name="submit"]').html('Saving');
+			$('#student_frm [name="submit"]').html('جاري الحفظ');
 
 			var formData = new FormData(this);
 
@@ -146,7 +150,7 @@ require_once 'auth.php';
 							location.reload();
 						}
 					} else {
-						console.log("The server response was not JSON: ", resp);
+						console.log("استجابة الخادم لم تكن بصيغة JSON: ", resp);
 					}
 				}
 
@@ -154,7 +158,7 @@ require_once 'auth.php';
 		});
 		$('.remove_student').click(function() {
 			var id = $(this).attr('data-id');
-			var _conf = confirm("Are you sure to delete this data ?");
+			var _conf = confirm("هل أنت متأكد من حذف هذه البيانات؟");
 			if (_conf == true) {
 				$.ajax({
 					url: 'delete_student.php?id=' + id,
@@ -184,26 +188,28 @@ require_once 'auth.php';
 					if (typeof resp != undefined) {
 						resp = JSON.parse(resp)
 						$('[name="id"]').val(resp.id)
+						$('[name="student_no"]').val(resp.student_no)
 						$('[name="firstname"]').val(resp.firstname)
 						$('[name="lastname"]').val(resp.lastname)
 						$('[name="middlename"]').val(resp.middlename)
 						$('[name="department"]').val(resp.department)
 						$('[name="year_acadmic"]').val(resp.year_acadmic)
-						$('#new_student .modal-title').html('Edit student')
+						$('#new_student .modal-title').html('تعديل الطالب')
 						$('#new_student').modal('show')
 					}
 				}
 			})
 
 		});
-		$('#new_emp_btn').click(function() {
+		$('#new_student_btn').click(function() {
 			$('[name="id"]').val('')
+			$('[name="student_no"]').val('')
 			$('[name="firstname"]').val('')
 			$('[name="lastname"]').val('')
 			$('[name="middlename"]').val('')
 			$('[name="department"]').val('')
 			$('[name="year_acadmic"]').val('')
-			$('#new_student .modal-title').html('Add New student')
+			$('#new_student .modal-title').html('إضافة طالب جديد')
 			$('#new_student').modal('show')
 		})
 	});
